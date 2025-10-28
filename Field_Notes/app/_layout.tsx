@@ -15,8 +15,10 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
+        <Stack.Screen name="index" options={{ title: 'Pliki/Galeria' }} />
+        <Stack.Screen name="files" options={{title: 'Lista Plików' }} />
+        <Stack.Screen name="gallery" options={{title: 'Galeria Upload'}} />
+        <Stack.Screen name="file" options={{title: 'Pliki Upload'}} />
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>
