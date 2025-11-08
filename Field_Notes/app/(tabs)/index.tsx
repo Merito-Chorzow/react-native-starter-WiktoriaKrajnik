@@ -1,17 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View, FlatList, Image, TouchableOpacity } from 'react-native';
-import { setOnNoteAdded } from '../../components/Note';
+import { setOnNoteAdded, type Item, setOnNoteDelete } from '../../components/Note';
 import { useRouter } from 'expo-router';
-
-type Item = {
-    id: string;
-    title: string;
-    description: string;
-    date: string;
-    kind: 'image'| 'file';
-    uri: string;
-    filename?: string;
-}
 
 export default function HomeScreen() {
   const[item, setItem] = useState<Item[]>([]);
@@ -19,25 +9,17 @@ export default function HomeScreen() {
 
   useEffect(()=>{
     setOnNoteAdded((item) => setItem(prev => [item, ...prev]));
+    setOnNoteDelete((id) => setItem((prev) => prev.filter((item) => item.id !== id)));
   },[]);
-  
-  function removeItem(id: string) {
-    setItem(prev => prev.filter(item => item.id !== id));
-  }
   
   const renderItem = ({ item }: {item : Item}) => (
     <View style={styles.notes}>
       {item.kind === "image" ? (
       <Image source={{ uri: item.uri }} style={styles.img} />) : (<Text style={styles.fIcon}>📄</Text>)}
       <View style={styles.textBox}>
-        <Text style={styles.nTitle}>Tytuł: {item.title}</Text>
-        {!!item.description && <Text> {item.description}</Text>}
-        <Text style={styles.nDate}>Data: {item.date}</Text>
+        <Text style={styles.nTitle}>Title: {item.title}</Text>
+        <Text style={styles.nDate}>Date: {item.date}</Text>
         {item.kind === "file" && <Text>{item.filename}</Text>}
-
-        <TouchableOpacity onPress={() => removeItem(item.id)}>
-            <Text style={styles.deleteBtn}>🗑 Delete</Text>
-        </TouchableOpacity>
       </View>
     </View>
   );
@@ -101,8 +83,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   nDate: {
-    fontSize: 12,
-    color: "#666"
+    fontSize: 16,
   },
   fIcon: {
     fontSize: 40,
@@ -113,12 +94,5 @@ const styles = StyleSheet.create({
       height: 80, 
       borderRadius: 6, 
       backgroundColor: '#ddd'
-  },
-    deleteBtn: { 
-      backgroundColor: "#e63737ff",
-      width: "auto",
-      justifyContent: 'space-between', 
-      borderRadius: 6, 
-      alignItems: "flex-end"
-    },
+  }
 });

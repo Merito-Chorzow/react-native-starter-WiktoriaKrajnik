@@ -3,11 +3,10 @@ import { View, Text, Alert, StyleSheet, TextInput, TouchableOpacity, Image} from
 import * as ImgPick from 'expo-image-picker';
 import * as DocPick from 'expo-document-picker';
 import { emitNoteAdded, type Item } from '../../components/Note';
-import { impactAsync } from 'expo-haptics';
+
 import { useRouter } from 'expo-router';
 
 export default function UploadScreen() {
-    const[item, setItem] = useState<Item[]>([]);
     const[title, setTitle] = useState('');
     const[description, setDescription] = useState('');
     const router = useRouter();
@@ -44,11 +43,11 @@ export default function UploadScreen() {
             uri,
             filename,
         };
-        setItem(prev => [newItem, ...prev]);
         emitNoteAdded(newItem);
         sendToAPI(newItem);
         setTitle('');
         setDescription('');
+        router.back(); 
     };
 
     const sendToAPI = async (note: Item) => {
