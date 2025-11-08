@@ -15,7 +15,6 @@ export default function RootLayout() {
     <ThemeProvider value={DefaultTheme}>
       <Stack>
         <Stack.Screen name="(tabs)" options={{headerShown: false}}/>
-        <Stack.Screen name="index" options={{ title: 'Pliki/Galeria' }} />
         <Stack.Screen name="files" options={{title: 'Pliki Upload'}} />
       </Stack>
       <StatusBar style="auto" />

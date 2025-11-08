@@ -1,23 +1,16 @@
 import React, {useState} from 'react';
-import { View, Text, Button, Alert, StyleSheet, TextInput, TouchableOpacity, Image} from 'react-native';
+import { View, Text, Alert, StyleSheet, TextInput, TouchableOpacity, Image} from 'react-native';
 import * as ImgPick from 'expo-image-picker';
 import * as DocPick from 'expo-document-picker';
-import { FlatList } from 'react-native';
-
-type Item = {
-    id: string;
-    title: string;
-    description: string;
-    date: string;
-    kind: 'image'| 'file';
-    uri: string;
-    filename?: string;
-}
+import { emitNoteAdded, type Item } from '../../components/Note';
+import { impactAsync } from 'expo-haptics';
+import { useRouter } from 'expo-router';
 
 export default function UploadScreen() {
     const[item, setItem] = useState<Item[]>([]);
     const[title, setTitle] = useState('');
     const[description, setDescription] = useState('');
+    const router = useRouter();
     
   
     const pickImage = async () => {
@@ -52,7 +45,8 @@ export default function UploadScreen() {
             filename,
         };
         setItem(prev => [newItem, ...prev]);
-        sendToAPI(newItem)
+        emitNoteAdded(newItem);
+        sendToAPI(newItem);
         setTitle('');
         setDescription('');
     };
@@ -69,47 +63,21 @@ export default function UploadScreen() {
         } catch (error) {
         Alert.alert("Błąd", "Nie udało się wysłać do API");
         }
-    }; 
-
-    const renderItem = ({ item }: {item : Item}) => (
-        <View style={styles.notes}>
-            {item.kind === "image" ? (
-            <Image source={{ uri: item.uri }} style={styles.img} />) : (<Text style={styles.fIcon}>📄</Text>)}
-            <View style={styles.textBox}>
-            <Text style={styles.nTitle}>{item.title}</Text>
-            {!!item.description && <Text>{item.description}</Text>}
-            <Text style={styles.nDate}>{item.date}</Text>
-            {item.kind === "file" && <Text>{item.filename}</Text>}
-
-        <TouchableOpacity onPress={() => removeItem(item.id)}>
-            <Text style={styles.deleteBtn}>🗑 Usuń</Text>
-        </TouchableOpacity>
-        </View>
-    </View>
-    );
-
-    function removeItem(id: string) {
-        setItem(prev => prev.filter(item => item.id !== id));
-    }
+    };
   
     return (
         <View style={styles.main}>
-            <Text style={styles.title}>Dodaj plik/zdjęcie</Text>
+            <Text style={styles.title}>Add File/Photo</Text>
             <TextInput style={styles.p1} placeholder="Title" value={title} onChangeText={setTitle}/>
             <TextInput style={styles.p2} placeholder="Description" multiline value={description} onChangeText={setDescription}/>
             <View>
               <TouchableOpacity style={styles.btn} onPress={pickImage}>
-                <Text style={styles.btnText}>WYBIERZ ZDJĘCIE</Text>
+                <Text style={styles.btnText}>CHOOSE PHOTO</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.btn} onPress={pickDocument}>
-                <Text style={styles.btnText}>WYBIERZ PLIK</Text>
+                <Text style={styles.btnText}>CHOOSE FILE</Text>
               </TouchableOpacity>
             </View>
-            <FlatList
-              data={item}
-              keyExtractor={item => item.id}
-              renderItem = {renderItem}
-            />
         </View>
     )
 }
@@ -154,45 +122,7 @@ const styles = StyleSheet.create({
     fontSize:18,
     color:"#fff",
     textAlign: 'center'
-  },
-  notes:{
-    flexDirection: "row",
-    padding: 10,
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 8,
-    marginBottom: 10,
-    backgroundColor: "#fafafa",
-    gap: 10
-},
-textBox: {
-  flex: 1,
-},
-nTitle: {
-  fontWeight: "bold",
-  fontSize: 16,
-},
-nDate: {
-  fontSize: 12,
-  color: "#666"
-},
-fIcon: {
-  fontSize: 40,
-  textAlignVertical: "center"
-},
-img:{
-    width: 100, 
-    height: 80, 
-    borderRadius: 6, 
-    backgroundColor: '#ddd'
-},
-  deleteBtn: { 
-    backgroundColor: "#e63737ff",
-    width: "auto",
-    justifyContent: 'space-between', 
-    borderRadius: 6, 
-    alignItems: "flex-end"
-  },
+  }
 
 });
 
