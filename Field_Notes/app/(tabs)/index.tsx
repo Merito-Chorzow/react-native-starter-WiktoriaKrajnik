@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View, FlatList, Image, TouchableOpacity } from 'react-native';
-import { setOnNoteAdded, type Item, setOnNoteDelete } from '../../components/Note';
+import { setOnNoteAdded, type Item, setOnNoteDelete, AllNotes } from '../../components/Note';
 import { useRouter } from 'expo-router';
 
 export default function HomeScreen() {
@@ -8,6 +8,7 @@ export default function HomeScreen() {
   const router = useRouter();
 
   useEffect(()=>{
+    setItem(AllNotes());
     setOnNoteAdded((item) => setItem(prev => [item, ...prev]));
     setOnNoteDelete((id) => setItem((prev) => prev.filter((item) => item.id !== id)));
   },[]);

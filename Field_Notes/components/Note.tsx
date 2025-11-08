@@ -7,12 +7,15 @@ export type Item = {
     uri: string;
     filename?: string;
 }
-
+let notes: Item[] = [];
+export function AllNotes(){
+    return notes;
+}
 let onAdded: ((note:Item) => void) | null = null;
 let onAdded2: ((note:Item) => void) | null = null;
 
 export function setOnNoteAdded(handler: (note: Item) => void){
-    onAdded = handler
+    onAdded = handler;
 };
 
 export function setOnNoteAdded2(handler: (note: Item) => void){
@@ -20,16 +23,18 @@ export function setOnNoteAdded2(handler: (note: Item) => void){
 };
 
 export function emitNoteAdded(note: Item){
-    onAdded?.(note)
-    onAdded2?.(note)
+    notes = [note, ...notes];
+    onAdded?.(note);
+    onAdded2?.(note);
 };
 
 let onDelete: ((id:string) => void) | null = null;
 
 export function setOnNoteDelete(handler: (id: string) => void){
-    onDelete = handler
+    onDelete = handler;
 };
 
 export function emitNoteRemove(id: string){
+    notes = notes.filter(item => item.id !== id);
     onDelete?.(id);
 };

@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View, FlatList, Image, TouchableOpacity } from 'react-native';
-import { setOnNoteAdded2, type Item, emitNoteRemove } from '../../components/Note';
+import { setOnNoteAdded2, type Item, emitNoteRemove, AllNotes } from '../../components/Note';
 import { useRouter } from 'expo-router';
 
 export default function HomeScreen() {
@@ -8,6 +8,7 @@ export default function HomeScreen() {
   const router = useRouter();
 
   useEffect(()=>{
+    setItem(AllNotes());
     setOnNoteAdded2((item) => setItem(prev => [item, ...prev]));
   },[]);
   
@@ -96,8 +97,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   nDate: {
-    fontSize: 12,
-    color: "#666"
+    fontSize: 16,
   },
   fIcon: {
     fontSize: 40,
