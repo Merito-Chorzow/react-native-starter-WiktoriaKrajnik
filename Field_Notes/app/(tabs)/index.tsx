@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View, FlatList, Image, TouchableOpacity } from 'react-native';
+import {StyleSheet, Text, View, FlatList, Image } from 'react-native';
 import { setOnNoteAdded, type Item, setOnNoteDelete, AllNotes } from '../../components/Note';
 import { useRouter } from 'expo-router';
 
@@ -16,7 +16,7 @@ export default function HomeScreen() {
   const renderItem = ({ item }: {item : Item}) => (
     <View style={styles.notes}>
       {item.kind === "image" ? (
-      <Image source={{ uri: item.uri }} style={styles.img} />) : (<Text style={styles.fIcon}>📄</Text>)}
+      <Image source={{ uri: item.uri }} style={styles.img} accessibilityRole="image" accessibilityLabel={"Note's photo"}/>) : (<Text style={styles.fIcon} accessible={false}>📄</Text>)}
       <View style={styles.textBox}>
         <Text style={styles.nTitle}>Title: {item.title}</Text>
         <Text style={styles.nDate}>Date: {item.date}</Text>
@@ -28,14 +28,14 @@ export default function HomeScreen() {
   const ListEmptyComponent = () => {
     return (
       <View style={styles.empty}>
-        <Text  style={styles.emptyText}>You haven't add any notes</Text>
+        <Text  style={styles.emptyText} accessibilityRole="text"  accessibilityLabel= "No notes. Add first in the upload.">You haven't added any notes</Text>
       </View>
     );
   };
 
   return (
     <View style={styles.all}>
-      <Text style={styles.title}>Note List</Text>
+      <Text style={styles.title} accessibilityRole="header">Note List</Text>
       <FlatList
         data={item}
         keyExtractor={item => item.id}

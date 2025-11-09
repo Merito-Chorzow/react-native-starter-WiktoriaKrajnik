@@ -30,28 +30,28 @@ export default function HomeScreen() {
     <View style={styles.notes}>
       <View style={styles.row}>
         {item.kind === "image" ? (
-        <Image source={{ uri: item.uri }} style={styles.img} />) : (<Text style={styles.fIcon}>📄</Text>)}
+        <Image source={{ uri: item.uri }} style={styles.img} accessibilityRole="image" accessibilityLabel={'Photo'} />) : (<Text style={styles.fIcon} accessible={false}>📄</Text>)}
         <View style={styles.textBox}>
           <Text style={styles.nTitle}>Title: {item.title}</Text>
           <Text style={styles.nDate}>Date: {item.date}</Text>
           {item.kind === "file" && <Text>{item.filename}</Text>}
-          <TouchableOpacity onPress={() => removeItem(item.id)}>
-            <Text style={styles.deleteBtn}>🗑 Delete</Text>
+          <TouchableOpacity onPress={() => removeItem(item.id)} accessibilityRole="button" accessibilityLabel={'Delete note'}>
+            <Text style={styles.Btn}>🗑 Delete</Text>
           </TouchableOpacity>
-          <TouchableOpacity>
-            <Text style={styles.deleteBtn}>✒️ Edit</Text>
+          <TouchableOpacity accessibilityRole="button" accessibilityLabel={'Edit note'}>
+            <Text style={styles.Btn}>✒️ Edit</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => showDetails(item.id)}>
-            <Text style={styles.deleteBtn}>{detailsId.has(item.id) ? '🔺Hide' : 'ℹ️ Details'}</Text>
+          <TouchableOpacity onPress={() => showDetails(item.id)} accessibilityRole="button" accessibilityLabel= {detailsId.has(item.id) ? 'Hide note details' : 'Show note details' }>
+            <Text style={styles.Btn}>{detailsId.has(item.id) ? '🔺Hide' : 'ℹ️ Details'}</Text>
           </TouchableOpacity>
         </View>
       </View>
       {detailsId.has(item.id) && (
         <View style={styles.detailsBox}>
           {item.kind === "image" ? (
-            <Image source={{ uri: item.uri }} style={styles.img2}/>
+            <Image source={{ uri: item.uri }} style={styles.img2} accessibilityRole="image" accessibilityLabel={'Photo'}/>
           ) : (
-            <Text style={styles.fIcon}>📄</Text>
+            <Text style={styles.fIcon} accessible={false}>📄</Text>
           )}
 
           <View style={styles.details}>
@@ -69,14 +69,14 @@ export default function HomeScreen() {
   const ListEmptyComponent = () => {
     return (
       <View style={styles.empty}>
-        <Text  style={styles.emptyText}>You haven't add any notes</Text>
+        <Text  style={styles.emptyText} accessibilityRole="text"  accessibilityLabel= "No notes. Add first in the upload.">You haven't added any notes</Text>
       </View>
     );
   };
 
   return (
     <View style={styles.all}>
-      <Text style={styles.title}>Edit notes</Text>
+      <Text style={styles.title} accessibilityRole="header">Edit notes</Text>
       <FlatList
         data={item}
         keyExtractor={item => item.id}
@@ -140,11 +140,13 @@ const styles = StyleSheet.create({
       borderRadius: 6, 
       backgroundColor: '#ddd'
   },
-  deleteBtn: { 
+  Btn: { 
     width: "auto",
     justifyContent: 'space-between', 
     borderRadius: 6, 
-    alignItems: "flex-end"
+    alignItems: "flex-end",
+    paddingVertical: 12,
+    paddingHorizontal: 8,
   },
   detailsBox:{
     borderTopWidth: 1,
