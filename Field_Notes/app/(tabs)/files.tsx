@@ -1,11 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View, FlatList, Image, TouchableOpacity } from 'react-native';
 import { setOnNoteAdded2, type Item, emitNoteRemove, AllNotes } from '../../components/Note';
-import { useRouter } from 'expo-router';
 
 export default function HomeScreen() {
   const[item, setItem] = useState<Item[]>([]);
-  const router = useRouter();
+  const[detailsId, setDetailsId] = useState<Set<string>>(new Set());
 
   useEffect(()=>{
     setItem(AllNotes());
@@ -16,26 +15,55 @@ export default function HomeScreen() {
     setItem(prev => prev.filter(item => item.id !== id));
     emitNoteRemove(id);
   }
+
+  function showDetails(id: string){
+    setDetailsId((prev) => {
+      const detail = new Set(prev);
+      if (detail.has(id)) detail.delete(id);
+      else detail.add(id);
+      return detail;
+    })
+  }
+
   
   const renderItem = ({ item }: {item : Item}) => (
     <View style={styles.notes}>
-      {item.kind === "image" ? (
-      <Image source={{ uri: item.uri }} style={styles.img} />) : (<Text style={styles.fIcon}>📄</Text>)}
-      <View style={styles.textBox}>
-        <Text style={styles.nTitle}>Title: {item.title}</Text>
-        <Text style={styles.nDate}>Date: {item.date}</Text>
-        {item.kind === "file" && <Text>{item.filename}</Text>}
-        <TouchableOpacity onPress={() => removeItem(item.id)}>
-          <Text style={styles.deleteBtn}>🗑 Delete</Text>
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Text style={styles.deleteBtn}>✒️ Edit</Text>
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Text style={styles.deleteBtn}>ℹ️ Details</Text>
-        </TouchableOpacity>
+      <View style={styles.row}>
+        {item.kind === "image" ? (
+        <Image source={{ uri: item.uri }} style={styles.img} />) : (<Text style={styles.fIcon}>📄</Text>)}
+        <View style={styles.textBox}>
+          <Text style={styles.nTitle}>Title: {item.title}</Text>
+          <Text style={styles.nDate}>Date: {item.date}</Text>
+          {item.kind === "file" && <Text>{item.filename}</Text>}
+          <TouchableOpacity onPress={() => removeItem(item.id)}>
+            <Text style={styles.deleteBtn}>🗑 Delete</Text>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <Text style={styles.deleteBtn}>✒️ Edit</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => showDetails(item.id)}>
+            <Text style={styles.deleteBtn}>{detailsId.has(item.id) ? '🔺Hide' : 'ℹ️ Details'}</Text>
+          </TouchableOpacity>
+        </View>
       </View>
+      {detailsId.has(item.id) && (
+        <View style={styles.detailsBox}>
+          {item.kind === "image" ? (
+            <Image source={{ uri: item.uri }} style={styles.img2}/>
+          ) : (
+            <Text style={styles.fIcon}>📄</Text>
+          )}
+
+          <View style={styles.details}>
+            <Text style={styles.detailsTitle}>Title: {item.title}</Text>
+            {!!item.description && <Text>Description: {item.description}</Text>}
+            <Text>Date: {item.date}</Text>
+            {item.kind === "file" && !!item.filename && <Text>{item.filename}</Text>}
+          </View>
+        </View>
+      )}
     </View>
+
   );
 
   const ListEmptyComponent = () => {
@@ -80,7 +108,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   notes:{
-    flexDirection: "row",
+    flexDirection: "column",
     padding: 10,
     borderWidth: 1,
     borderColor: "#ddd",
@@ -88,6 +116,9 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     backgroundColor: "#fafafa",
     gap: 10
+  },
+  row:{
+    flexDirection: "row",
   },
   textBox: {
     flex: 1,
@@ -115,4 +146,23 @@ const styles = StyleSheet.create({
     borderRadius: 6, 
     alignItems: "flex-end"
   },
+  detailsBox:{
+    borderTopWidth: 1,
+    borderTopColor: '#eee',
+    paddingTop: 10,
+    paddingBottom: 12,
+    gap: 10,
+  },
+  img2:{
+    width: '100%',
+    height: 220,
+    borderRadius: 8,
+    backgroundColor: '#eee',
+  },
+  details:{
+    gap: 4,
+  },
+  detailsTitle:{
+    fontWeight: '600',
+  }
 });
