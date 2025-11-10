@@ -1,50 +1,109 @@
-# Welcome to your Expo app 👋
+# React Native – Field Notes
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Podstawowa aplikacja mobilna stworzona w **React Native (Expo)**.  
+Aplikacja pozwala dodawać notatki ze zdjęciem lub plikiem, przeglądać je, edytować oraz wysyłać dane do API.
+Projekt powstał w ramach zadania „Field Notes”.
 
-## Get started
+---
 
-1. Install dependencies
+## Funkcje aplikacji
 
+### Widoki (3)
+1. **Lista Notatek** – `app/(tabs)/index.tsx`  
+   Wyświetla wszystkie dodane notatki (tytuł, data, zdjęcie/ikonka pliku).
+2. **Dodaj** – `app/(tabs)/upload.tsx`  
+   Formularz: tytuł, opis + wybór zdjęcia albo pliku z urządzenia. Po dodaniu wykonuje też request do API.
+3. **Edycja / Szczegóły** – `app/(tabs)/files.tsx`  
+   Można zobaczyć szczegóły notatki, edytować dane oraz usunąć wpis.
+
+---
+
+## Funkcja natywna
+
+Aplikacja korzysta z:
+1. **wyboru zdjęcia** z galerii (expo-image-picker) 
+2. **wyboru pliku** (expo-document-picker)  
+Wybrałam to, bo pasuje do tematu „Field Notes” — można dodać zdjęcie albo dokument do wpisu.
+---
+
+## Integracja z API
+
+Aplikacja wysyła dane metodą **POST** do:
+https://jsonplaceholder.typicode.com/posts
+
+Po dodaniu notatki dane są wysyłane do API.
+
+---
+
+## Stan aplikacji
+
+Stan przechowywany lokalnie w prostym store (components/Note.tsx):
+- dodanie notatki,  
+- usunięcie,  
+- edycja.
+
+
+---
+
+## Dostępność
+Zastosowane elementy:  
+- `accessibilityRole`, `accessibilityLabel`   
+- rozmiary przycisków ~48px  
+- walidacja danych (Alert)
+
+---
+
+## Edge Cases
+
+- brak internetu - komunikat + pominięcie requestu  
+- brak tytułu - blokada zapisu + komunikat  
+- możliwość anulowania edycji
+
+---
+
+## Struktura projektu
+1. Struktura:
+   ```bash
+   app/  
+      ├─ _layout.tsx  
+      └─ (tabs)/
+         ├─ _layout.tsx  
+         ├─ index.tsx      # lista notatek  
+         ├─ upload.tsx     # dodawanie, API, offline  
+         └─ files.tsx      # edycja / podgląd / usuwanie  
+   components/  
+   └─ Note.tsx           # prosty store eventowy
+
+---
+
+## Jak uruchomić
+
+1. Zainstaluj zależności:
    ```bash
    npm install
-   ```
-
-2. Start the app
-
+2. Uruchom Expo:
    ```bash
    npx expo start
-   ```
 
-In the output, you'll find options to open the app in a
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+Zeskanuj kod QR w aplikacji Expo Go (Android/iOS) lub użyj emulatora.
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## Jak przetestować
 
-## Get a fresh project
+Dodawanie notatki: zakładka Upload - wpisz dane - wybierz zdjęcie lub plik - zapisz
 
-When you're ready, run:
+Szczegóły: zakładka Files - kliknij „Details”
 
-```bash
-npm run reset-project
-```
+Edycja: zakładka Files - „Edit” - zapisz
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Usuwanie: zakładka Files - „Delete”
 
-## Learn more
+Offline: wyłącz internet(jeśli jest używane Expo Go najlepiej włączyć tryb samolotowy, samo wyłączenie Wi-Fi może nie wystarczyć) i spróbuj dodać notatkę - pokaże się komunikat
 
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## Definition of Done
+- [x] 3–4 kompletne widoki zgodne z opisem.
+- [x] Użyta co najmniej **1 natywna funkcja**.
+- [x] Integracja z **API** (co najmniej 1 żądanie).
+- [x] Czytelny UI + podstawowa dostępność.
+- [x] Aktualizacja `README.md` z opisem funkcji i sposobem testowania.
+- [x] Min. 3 logiczne commity.
